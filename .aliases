@@ -1,0 +1,134 @@
+# vim: set ft=sh :
+# alias report='vim `find . -name index.html`'
+alias report='open `find . -name index.html`'
+# alias repo='cd ~/.m2/repository/'
+# alias repo='clear && cd ~/.m2/repository/'
+alias repo='clear && cd ~/.m2/repository/ && ls'
+alias mvc='clear && cd ~/Documents/springmvc-2ed-master/ && ls'
+# make sure CLASSPATH has been defined!
+# use `type classpath` to check that
+# if not, $CLASSPATH would be empty!
+# source this script at the end of .zshrc to solve the problem
+alias classpath="echo $CLASSPATH | sed 's/:/\n/g'"
+alias classpath="echo $CLASSPATH | tr : '\n'"
+alias deploy="cp target/*.war $WEBAPPS"
+alias java8="JAVA_HOME=$JAVA8"
+alias lx="ls | xargs"
+alias lxone="ls | xargs -n1"
+alias uniqn="uniq -n"
+
+alias junitcore='java org.junit.runner.JUnitCore'
+
+alias sia="cd $SPRINT_IN_ACTION/"
+
+alias cdlocale='cd /usr/share/locale'
+
+alias odascii='od -a'
+alias odhexint='od -X'
+alias odhexshort='od -x'
+alias odc='od -c'  # c style
+alias odbyte='od -b'
+
+alias vimfindR='vim "$(find app/build/generated/source/r/debug/com -name R.java)"'
+
+# use: mvntmpl -DgroupId=<groupId> -DartifactId=<artifactId> 
+alias mvntmpl="mvn -B archetype:generate \
+    -DarchetypeGroupId=org.apache.maven.archetypes"
+
+alias quickstart="mvn archetype:generate \
+    -DarchetypeArtifactId=maven-archetype-quickstart \
+    -DarchetypeVersion=1.4 \
+    -DinteractiveMode=false"
+
+#################################################
+#  _________________________________________    #
+# /\                                        \   #
+# \_| # curl zips or jars from command line |   #
+#   |                                       |   #
+#   |   ____________________________________|_  #
+#    \_/______________________________________/ #
+#################################################
+
+# example URL => HTtp://central.maven.org/maven2/org/springframework/spring-core/5.1.3.RELEASE/spring-core-5.1.3.RELEASE.jar
+# downloading may fail sometimes (empty jars); retrying the command solves the problem (needn't rm; the new overwrites the old)
+alias curlzip='curl -H "Accept: application/zip" -O'
+# alias curljar='curlzip'
+
+alias vimdiffbp='vimdiff ~/.bash_profile{,\~}'
+alias vimdiffbr='vimdiff ~/.bashrc{,\~}'
+alias vimdiffzsh='vimdiff ~/.zshrc{,\~}'
+
+alias vimbz='vim -O ~/.{ba,z}shrc'
+
+alias emacs='emacs -nw'
+alias guiemacs='/usr/local/bin/emacs'
+alias binemacs='/usr/bin/emacs'
+
+# -s for du is equivalent to -d 0
+alias prov='less ~/凡遇*.txt'
+alias ds='du -sh *'
+# for bash interface only; zsh has a different interface
+# bash usage: history [n]
+# zsh usage: history [-n]
+alias histen='history 10'
+alias hisfive='history 5'
+alias histwenty='history 20'
+alias ipy='ipython'
+alias s="startup.sh"
+alias h="history"
+alias gvim="MacVim"
+alias qsed="sed -n"
+alias rm='rm -iv'
+alias cp='cp -iv'
+alias mv='mv -iv'
+alias vbm='VBoxManage'
+alias ubuntu='vbm startvm Ubuntu'
+alias centos='vbm startvm CentOS'
+alias foo='cd /usr; ls ; cd -'
+alias grepi='grep -i'
+alias gvim="gvim -u ~/.gvimrc"
+alias gview="gview -u ~/.gvimrc"
+alias gvimdiff="gvimdiff -u ~/.gvimrc"
+alias mvim="mvim -u ~/.gvimrc"
+alias dud1="du -d1 -h"
+alias dud2="du -d2 -h"
+alias grep='grep --color=auto'
+alias li='ls -liG'
+alias lc='ls -lG'
+alias ll='ls -l'
+alias lh='ls -lh' 
+alias lsd='ls -ld'
+alias lessll='ls -lFt | less'
+alias lesslr='ll -RS | less'
+alias apache='apachectl'
+alias egrep='egrep --color=auto'
+
+
+alias util="cd /Users/wangxueming/Documents/javasrc/java/util/ && clear && echo changed into directory $JAVASRC/java/util"
+alias lang="cd /Users/wangxueming/Documents/javasrc/java/lang/ && clear && echo changed into directory $JAVASRC/java/lang"
+alias io="cd /Users/wangxueming/Documents/javasrc/java/io/ && clear && echo changed into directory $JAVASRC/java/io"
+alias gh="cd ~/github/ && clear && echo changed into directory ~/github/"
+alias log4j="cd $LOG4J_SRC && clear && echo changed into directory $LOG4J_SRC"
+alias junit="cd $JUNIT_SRC && clear && echo changed into directory $JUNIT_SRC"
+
+alias csdn="open http://www.csdn.net"
+alias google="open http://www.google.com"
+alias yt="open http://www.youtube.com"
+alias wiki="open http://www.wikipedia.org"
+alias github="open http://www.github.com"
+alias st="open http://www.stackoverflow.com"
+alias w3="open http://www.w3schools.com"
+alias lxs="lx -n2 | sed 's/ /\t/'"
+alias ws="open http://www.williamsummer.org"
+
+alias lsd="ls -d"
+alias lsdir="ls -d */"
+alias dir="ls -F | grep '/$'"
+alias dir4="ls -F | grep '/$' | xargs -n4"
+alias dir6="ls -F | grep '/$' | xargs -n6"
+alias lldir="ll | grep '^d'"
+
+alias log4j-init="cp ~/log4j/log4j.properties ."
+alias mybatis-init="cp ~/mybatis/{UserMapper{.java,.xml,Test.java},mybatis-config.xml,BaseMapperTest.java,SysUser.java} ."
+alias ant-init="cp ~/ant/build.xml ."
+alias hibernate-init="cp ~/hibernate/build.xml . && cp -R ~/hibernate/src ."

@@ -1,0 +1,22 @@
+MAIL_DRAFTS=$HOME/Mail/drafts/
+ITUNES="$HOME/Music/iTunes/iTunes Media/Apple Music"
+# CVSROOT=~/
+# export CVSROOT
+export CVSROOT=~/cvsroot/
+export CVSEDITOR=emacs
+
+export JAY="$HOME/Jay/JAY/"
+export Fantasy="$HOME/Jay/范特西/"
+export BaDuKongJian="$HOME/Jay/八度空间/"
+export YeHuiMei="$HOME/Jay/叶惠美/"
+export QiLiXiang="$HOME/Jay/七里香/"
+export NovemberChopin="$HOME/Jay/11月的萧邦/"
+export StillFantasy="$HOME/Jay/依然范特西/"
+export WoHenMang="$HOME/Jay/我很忙/"
+export MojieZuo="$HOME/Jay/魔杰座/"
+export KuaShiDai="$HOME/Jay/跨时代/"
+export NotBad="$HOME/Jay/哎呦, 不错哦/"
+export Stories="$HOME/Jay/周杰伦的床边故事/"
+
+export LOG4J_SRC="/Users/wangxueming/github/log4j/src/main/java/org/apache/log4j/"
+export REMOTE="http://www.github.com/evershinemj"

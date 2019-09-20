@@ -1,0 +1,658 @@
+# vim: set ft=sh :
+
+########################
+#        \\\///        #
+#       / _  _ \       #
+#     (| (.)(.) |)     #
+# .-.OOOo--()--oOOO.-. #
+# |                  | #
+# | # functions      | #
+# |                  | #
+# '-.oooO------------' #
+#    (   )   Oooo.     #
+#     \ (    (   )     #
+#      \_)    ) /      #
+#            (_/       #
+#                      #
+########################
+# $1: project root name; $2: last part of the package name; $3: class name
+function makeproj() {
+        echo 'generating standard java project layout ...'
+        echo 'project name:' $1
+        echo
+
+        mkdir -p $1/src/{main,test}/{java,resources}/
+        echo "${REVERSE}created directories${NC}" $1/src/{main,test}/{java,resources}
+        mkdir -p $1/src/{main,test}/java/com/baixianliu/$2
+        echo "${REVERSE}created directories${NC}" $1/src/{main,test}/java/com/baixianliu/$2
+        touch $1/src/main/java/com/baixianliu/$2/$3.java
+        echo "${REVERSE}created file${NC}" $1/src/main/java/com/baixianliu/$2/$3.java
+        touch $1/src/test/java/com/baixianliu/$2/$3Test.java
+        echo "${REVERSE}created file${NC}" $1/src/test/java/com/baixianliu/$2/$3Test.java
+}
+
+function javaproj() {
+    if [ $# != 3 ]; then
+        # use $0 instead of hard-coding the function name
+        echo usage: $0 '<project-root> <package-end> <class-name>'
+        exit -1
+    fi
+    makeproj $@
+}
+
+function mybatisproj() {
+    # refactored
+    # moved snippet from mvnproj
+    if [ $# != 3 ]; then
+        # use $0 instead of hard-coding the function name
+        #
+        # echo usage: $0 '<project-root> <package-end> <class-name>'
+        echo usage: $0 '<project-root> <package> <class-name>'
+
+        # exit -1
+        # functions are not executed in subshells
+        # hence use return instead of exit in functions
+        return -1
+    fi
+
+        echo 'generating standard java project layout ...'
+        echo 'project name:' $1
+        echo
+
+        mkdir -p $1/src/{main,test}/{java,resources}/
+        echo "${REVERSE}created directories${NC}" $1/src/{main,test}/{java,resources}
+        # mkdir -p $1/src/{main,test}/java/com/baixianliu/$2
+        #
+        # refactored
+        # mkdir -p $1/src/{main,test}/java/$2
+        package=`echo $2 | sed 's/\//./g'`
+        packagepath="`echo $2 | sed 's/\./\//g'`"
+        model=$packagepath/model
+        mapper=$packagepath/mapper
+
+        main=$1/src/main/java/$2/$3.java
+        test=$1/src/test/java/$2/$3Test.java
+        maindir=`dirname $main`
+        testdir=`dirname $test`
+        mappertest=$1/src/test/java/$2/$3MapperTest.java
+        resources=$1/src/main/resources/
+        # mkdir -p $1/src/{main,test}/java/$2
+        mkdir -p $testdir
+        # mkdir -p $1/src/main/java/$model/$3.java
+        # mkdir -p $1/src/main/java/$mapper/${3}Mapper.java
+        mkdir -p $1/src/main/java/$model/
+        mkdir -p $1/src/main/java/$mapper/
+        mkdir -p $1/src/main/resources/$mapper/
+        touch $mappertest
+        touch $1/src/main/resources/$mapper/${3}Mapper.xml
+        touch $1/src/main/java/$model/$3.java
+        touch $1/src/main/java/$mapper/${3}Mapper.java
+
+        # touch mybatis-config.xml
+        cp ~/mybatis/mybatis-config.xml $resources
+        cp ~/mybatis/log4j.properties $resources
+        # sed --in-place "s/resource=.*FooMapper\.xml/$mapper\/${3}Mapper.xml" $resources/mybatis-config.xml
+        # must use a '/' to terminate the s command in sed
+        # s/foo/bar/
+        # sed --in-place "s/resource=.*FooMapper\.xml/$mapper\/${3}Mapper.xml/" $resources/mybatis-config.xml
+        # sed --in-place -e "s/resource=.*FooMapper\.xml/$mapper\/${3}Mapper.xml/" $resources/mybatis-config.xml
+        sed --in-place -e "s;resource=.*FooMapper\.xml;resource=\"$mapper/${3}Mapper.xml;" $resources/mybatis-config.xml
+        # BUG FOUND: 
+        # unmatched quotes
+        # sed --in-place "s/package name=\".*\"/package name=\"$package\"/ $resources/mybatis-config.xml
+        # sed --in-place "s/package name=\".*\"/package name=\"$package\"/" $resources/mybatis-config.xml
+        # sed --in-place -e "s/package name=\".*\"/package name=\"$package\"/" $resources/mybatis-config.xml
+        sed --in-place -e "s/package name=\".*\"/package name=\"$package\"/" $resources/mybatis-config.xml
+        echo "${REVERSE}created directories${NC}" $1/src/{main,test}/java/$2
+        # touch $1/src/main/java/$2/$3.java
+        # move variable definitions up
+        # main=$1/src/main/java/$2/$3.java
+        touch $main
+        echo "${REVERSE}created file${NC}" $1/src/main/java/$2/$3.java
+        # package="`echo $2 | sed 's,/,./g'`;"
+        packagedecl="package `echo $2 | sed 's/\//./g'`;"
+        echo $packagedecl >> $main
+        # touch $1/src/test/java/$2/$3Test.java
+        # test=$1/src/test/java/$2/$3Test.java
+        touch $test
+        echo $packagedecl >> $test
+        echo "${REVERSE}created file${NC}" $1/src/test/java/$2/$3Test.java
+}
+
+function genproj() {
+    if [ $# != 3 ]; then
+        # use $0 instead of hard-coding the function name
+        #
+        # echo usage: $0 '<project-root> <package-end> <class-name>'
+        #
+        # echo usage: $0 '<project-root> <package> <class-name>'
+        echo usage: $0 '<project-root> <package-dirname> <class-name>'
+
+        # exit -1
+        # functions are not executed in subshells
+        # hence use return instead of exit in functions
+        return -1
+    fi
+
+        echo 'generating standard java project layout ...'
+        echo 'project name:' $1
+        echo
+
+        mkdir -p $1/src/{main,test}/{java,resources}/
+        echo "${REVERSE}created directories${NC}" $1/src/{main,test}/{java,resources}
+        # mkdir -p $1/src/{main,test}/java/com/baixianliu/$2
+        mkdir -p $1/src/{main,test}/java/$2
+        echo "${REVERSE}created directories${NC}" $1/src/{main,test}/java/$2
+        # touch $1/src/main/java/$2/$3.java
+        main=$1/src/main/java/$2/$3.java
+        touch $main
+        echo "${REVERSE}created file${NC}" $1/src/main/java/$2/$3.java
+        # package="`echo $2 | sed 's,/,./g'`;"
+        package=`echo $2 | sed 's/\//./g'`
+        # packagedecl="package `echo $2 | sed 's/\//./g'`;"
+        packagedecl="package ${package};"
+        echo $packagedecl >> $main
+        # touch $1/src/test/java/$2/$3Test.java
+        test=$1/src/test/java/$2/$3Test.java
+        touch $test
+        echo $packagedecl >> $test
+        echo "${REVERSE}created file${NC}" $1/src/test/java/$2/$3Test.java
+}
+
+# function webproj() {
+    
+# }
+
+function mvnproj() {
+    # refactored
+    # move snippet to genproj
+
+    #  ____________________________________________________________________
+    # /\                                                                   \
+    # \_| if [ $# != 3 ]; then                                             |
+    #   |     # use $0 instead of hard-coding the function name            |
+    #   |     #                                                            |
+    #   |     # echo usage: $0 '<project-root> <package-end> <class-name>' |
+    #   |     echo usage: $0 '<project-root> <package> <class-name>'       |
+    #   |                                                                  |
+    #   |     # exit -1                                                    |
+    #   |     # functions are not executed in subshells                    |
+    #   |     # hence use return instead of exit in functions              |
+    #   |     return -1                                                    |
+    #   | fi                                                               |
+    #   |   _______________________________________________________________|_
+    #    \_/_________________________________________________________________/
+
+    # makeproj $@
+    genproj $@
+    echo
+    ################################################################################################
+    # # BUG FOUND:                                                                                 #
+    # # if $1 is null, `touch /pom.xml` will be executed, hence resulting in file permission issue #
+    ################################################################################################
+    # added 
+    # if test -z $1; then
+    #     echo error: project root directory not specified
+    #     # exit -1
+    #     return -1
+    # fi
+
+    if test $# -ne 3; then
+        return -1
+    fi
+    touch $1/pom.xml
+    # cp ~/mavenprojects/template-pom.xml $1/pom.xml
+    # simple pom.xml has the follow basic tags:
+    # <project>
+    # <modelVersion>
+    # <properties>
+    #   <maven.compiler.source>
+    #   <maven.compiler.target>
+    # </properties>
+
+    # read -p 'Please specify which template pom.xml to use: ' pom
+    # zsh read builtin is not compatible with bash read
+    # see `man zshbuiltins`
+    read 'pom?Please specify which template pom.xml to use[simple/exec/generic]: '
+    # if [[ $pom == 'simple' ]]; then
+    #     cp ~/mavenprojects/simple-template-pom.xml $1/pom.xml
+    # fi
+    case $pom in
+        simple*)
+            cp ~/mavenprojects/simple-template-pom.xml $1/pom.xml
+            ;;
+        exec*)
+            cp ~/mavenprojects/exec-maven-plugin-pom.xml $1/pom.xml
+            ;;
+        *)
+            cp ~/mavenprojects/template-pom.xml $1/pom.xml
+            ;;
+    esac
+            
+
+    echo generated pom.xml in project $1
+}
+
+function gradleproj() {
+    if [ $# != 3 ]; then
+        # use $0 instead of hard-coding the function name
+        echo usage: $0 '<project-root> <package-end> <class-name>'
+        exit -1
+    fi
+    makeproj $@
+    echo
+    touch $/build.gradle
+    cp ~/gradleprojects/template-build.gradle $1/build.gradle
+    echo generated build.gradle in project $1
+}
+
+
+function vimhs() {
+    # -e should be -eq
+    # if test $# -e 0
+    if test $# -eq 0
+    then
+        echo 'No argument!'
+        echo Usage: vimhs '<session-file-in-$HOME/sesson>'
+        exit -1
+    elif echo 'Argument(s) provided...'; test $# -gt 1
+    then
+        echo "Expected 1 argument, got $#"
+        echo Usage: vimhs '<session-file-in-$HOME/sesson>'
+        exit -1
+    else
+        vim -S ~/session/$1
+    fi
+}
+
+function wgetsources() {
+    _wget source
+}
+
+function dependency() {
+    echo "
+    dependency layout:
+    ${ITALIC_GREEN}<dependency>${NC}
+        ${BOLD_CYAN}<groupId>$1</groupId>${NC}
+        ${BOLD_CYAN}<artifactId>$2</artifactId>${NC}
+        ${BOLD_CYAN}<version>$3</version>${NC}
+    ${ITALIC_GREEN}</dependency>${NC}
+    "
+}
+
+function wgetpom() {
+    # refactored
+    cd ~/poms/
+    echo -e ${BLUE}; pwd && echo
+
+    echo Downloading pom from $MAVEN_CENTRAL
+    echo -n 'Please provide a groupId: '
+    read groupId
+    echo -n 'Please provide an artifactId: '
+    read artifactId
+    echo -n 'Please provide a version: '
+    read version
+
+    # groupId="`echo $groupId | sed 's;\.;/;g'`"
+    # refactored
+    groupId="`echo $groupId | sed 's;/;.;g'`"
+
+    # echo "
+    # dependency layout:
+    # ${GREEN}<dependency>${NC}
+    # ${CYAN}<groupId>$groupId</groupId>${NC}
+    # ${CYAN}<artifactId>$artifactId</artifactId>${NC}
+    # ${CYAN}<version>$version</version>${NC}
+    # ${GREEN}</dependency>${NC}
+    # "
+
+    # echo "
+    # dependency layout:
+    # ${ITALIC_GREEN}<dependency>${NC}
+    # ${BOLD_CYAN}<groupId>$groupId</groupId>${NC}
+    # ${BOLD_CYAN}<artifactId>$artifactId</artifactId>${NC}
+    # ${BOLD_CYAN}<version>$version</version>${NC}
+    # ${ITALIC_GREEN}</dependency>${NC}
+    # "
+
+    dependency $groupId $artifactId $version
+
+    url=${MAVEN_CENTRAL}$groupId/$artifactId/$version/${artifactId}-${version}.pom
+    echo "Trying to downloading $url ..."
+    echo    # separate function output from wget output
+    wget $url
+}
+
+function wgetpom() {
+    _wget pom
+}
+
+function wgetjavadoc() {
+    # refactored
+    cd ~/javadocs/
+    echo -e ${BLUE}; pwd && echo
+    
+
+    echo Downloading javadoc from $MAVEN_CENTRAL
+    echo -n 'Please provide a groupId: '
+    read groupId
+    echo -n 'Please provide an artifactId: '
+    read artifactId
+    echo -n 'Please provide a version: '
+    read version
+
+    # groupId="`echo $groupId | sed 's;\.;/;g'`"
+    # refactored
+    groupId="`echo $groupId | sed 's;/;.;g'`"
+
+    # echo "
+    # dependency layout:
+    # ${GREEN}<dependency>${NC}
+    # ${CYAN}<groupId>$groupId</groupId>${NC}
+    # ${CYAN}<artifactId>$artifactId</artifactId>${NC}
+    # ${CYAN}<version>$version</version>${NC}
+    # ${GREEN}</dependency>${NC}
+    # "
+
+    # echo "
+    # dependency layout:
+    # ${ITALIC_GREEN}<dependency>${NC}
+    # ${BOLD_CYAN}<groupId>$groupId</groupId>${NC}
+    # ${BOLD_CYAN}<artifactId>$artifactId</artifactId>${NC}
+    # ${BOLD_CYAN}<version>$version</version>${NC}
+    # ${ITALIC_GREEN}</dependency>${NC}
+    # "
+
+    dependency $groupId $artifactId $version
+
+    url=${MAVEN_CENTRAL}$groupId/$artifactId/$version/${artifactId}-${version}-javadoc.jar
+    # refactored
+    javadoc_jar=${artifactId}-${version}-javadoc.jar
+    javadoc=${artifactId}-${version}-javadoc
+
+    echo "Trying to downloading $url ..."
+    echo    # separate function output from wget output
+    wget $url
+
+    # refactored
+    if test $? -eq 0
+    then
+        mkdir $javadoc && cd $javadoc
+        # bug found: forgot to add ../
+        # jar throw java.io.FileNotFoundException
+        jar -xf ../$javadoc_jar
+        cd ..
+    fi
+}
+
+function wgetjavadoc() {
+    _wget javadoc
+}
+
+function wgetsources() {
+    # refactored
+    cd ~/sources/
+    echo -e ${BLUE}; pwd && echo
+
+    echo Downloading sources from $MAVEN_CENTRAL
+    echo -n 'Please provide a groupId: '
+    read groupId
+    echo -n 'Please provide an artifactId: '
+    read artifactId
+    echo -n 'Please provide a version: '
+    read version
+
+    # groupId="`echo $groupId | sed 's;\.;/;g'`"
+    # refactored
+    groupId="`echo $groupId | sed 's;/;.;g'`"
+
+    # echo "
+    # dependency layout:
+    # ${GREEN}<dependency>${NC}
+    # ${CYAN}<groupId>$groupId</groupId>${NC}
+    # ${CYAN}<artifactId>$artifactId</artifactId>${NC}
+    # ${CYAN}<version>$version</version>${NC}
+    # ${GREEN}</dependency>${NC}
+    # "
+
+    # echo "
+    # dependency layout:
+    # ${ITALIC_GREEN}<dependency>${NC}
+    # ${BOLD_CYAN}<groupId>$groupId</groupId>${NC}
+    # ${BOLD_CYAN}<artifactId>$artifactId</artifactId>${NC}
+    # ${BOLD_CYAN}<version>$version</version>${NC}
+    # ${ITALIC_GREEN}</dependency>${NC}
+    # "
+
+    dependency $groupId $artifactId $version
+
+    url=${MAVEN_CENTRAL}$groupId/$artifactId/$version/${artifactId}-${version}-sources.jar
+    echo "Trying to downloading $url ..."
+    echo    # separate function output from wget output
+    wget $url
+}
+
+# refactoring
+# implementing curljar as a function
+# improved user interface
+#
+# set virtualedit=all in .vimrc
+# thus cursor can move beyond chars in the buffer!
+# not desired here
+# reset virtualedit
+# 
+###########################################
+# # however, in visual block mode,        #
+# # set virtualedit=block might be useful #
+###########################################
+#
+# function for inner implementation, not
+# as an interface
+function _download_jar() {
+    # refactored
+    cd ~/jars
+    echo -e ${BLUE}; pwd && echo
+
+    echo Downloading jar from $MAVEN_CENTRAL
+    echo -n 'Please provide a groupId: '
+    read groupId
+    echo -n 'Please provide an artifactId: '
+    read artifactId
+    echo -n 'Please provide a version: '
+    read version
+
+    # groupId="`echo $groupId | sed 's;/;.;g'`"
+    # groupId="`echo $groupId | sed 's;.;/;g'`"
+    #
+    # groupId="`echo $groupId | sed 's;\.;/;g'`"
+    # refactored
+    groupId="`echo $groupId | sed 's;/;.;g'`"
+
+    # echo "
+    # dependency layout:
+    # ${GREEN}<dependency>${NC}
+    # ${CYAN}<groupId>$groupId</groupId>${NC}
+    # ${CYAN}<artifactId>$artifactId</artifactId>${NC}
+    # ${CYAN}<version>$version</version>${NC}
+    # ${GREEN}</dependency>${NC}
+    # "
+
+    # echo "
+    # dependency layout:
+    # ${ITALIC_GREEN}<dependency>${NC}
+    # ${BOLD_CYAN}<groupId>$groupId</groupId>${NC}
+    # ${BOLD_CYAN}<artifactId>$artifactId</artifactId>${NC}
+    # ${BOLD_CYAN}<version>$version</version>${NC}
+    # ${ITALIC_GREEN}</dependency>${NC}
+    # "
+
+    dependency $groupId $artifactId $version
+
+    # url=$MAVEN_CENTRAL/$groupId/$artifactId/$version/${artifactId}-${version}
+    # 
+    # subtle bug: 
+    # url has a different pattern from file path in terms of the / separator
+    # '//' is the same as '/' in file path,
+    # but '//' is not recognized in a url!
+    url=${MAVEN_CENTRAL}$groupId/$artifactId/$version/${artifactId}-${version}.jar
+
+    # refactored
+    # bug found: case of v in version mistaken
+    # jar=${artifactId}-${Version}.jar
+    jar=${artifactId}-${version}.jar
+
+    # echo "Downloading $url.jar ..."
+    #
+    # echo "Downloading $url ..."
+    echo "Trying to downloading $url ..."
+    echo    # separate function output from wget output
+
+    # bug found:
+    # jar not included in url!
+    #
+    # bug found:
+    # url should be a reference, not a string!
+    # prepend $ to url
+    # curl -H 'Accept: application/jar' url
+    # curl -H 'Accept: application/zip' $url
+    # add -O to download!
+    # curl -H 'Accept: application/zip' -O $url
+    # return $url
+    # cannot return a value in shell functions
+    #
+    # url can be directly used out of the function, though
+}
+
+function wgetjar() {
+    _download_jar
+    # wget $url
+    # wget --header 'Accept: application/zip' $url
+    # wget --header='Accept: application/zip' $url
+    wget --header='Accept: application/java-archive' $url
+
+    # refactored
+    # if test $? -eq 0
+    # then
+
+    #     jar -xf $jar
+    # fi
+}
+
+function wgetjar() {
+    _wget jar
+}
+
+function curljar() {
+    _download_jar
+    curl -H 'Accept: application/zip' -O --progress-bar $url
+}
+
+function _wget() {
+    # refactored
+    # cd ~/jars
+    cd ~/${1}s
+    echo -e ${BLUE}; pwd && echo
+
+    # echo Downloading jar from $MAVEN_CENTRAL
+    echo Downloading $1 from $MAVEN_CENTRAL
+
+    echo -n 'Please provide a groupId: '
+    read groupId
+    echo -n 'Please provide an artifactId: '
+    read artifactId
+    echo -n 'Please provide a version: '
+    read version
+
+    # groupId="`echo $groupId | sed 's;/;.;g'`"
+    # groupId="`echo $groupId | sed 's;.;/;g'`"
+    #
+    # groupId="`echo $groupId | sed 's;\.;/;g'`"
+    # refactored
+
+    # using two variable solves the problem of slash and dot confusion
+    groupId="`echo $groupId | sed 's;\.;/;g'`"
+    dotGroupId="`echo $groupId | sed 's;/;.;g'`"
+
+    # echo "
+    # dependency layout:
+    # ${GREEN}<dependency>${NC}
+    # ${CYAN}<groupId>$groupId</groupId>${NC}
+    # ${CYAN}<artifactId>$artifactId</artifactId>${NC}
+    # ${CYAN}<version>$version</version>${NC}
+    # ${GREEN}</dependency>${NC}
+    # "
+
+    # echo "
+    # dependency layout:
+    # ${ITALIC_GREEN}<dependency>${NC}
+    # ${BOLD_CYAN}<groupId>$groupId</groupId>${NC}
+    # ${BOLD_CYAN}<artifactId>$artifactId</artifactId>${NC}
+    # ${BOLD_CYAN}<version>$version</version>${NC}
+    # ${ITALIC_GREEN}</dependency>${NC}
+    # "
+
+    dependency $dotGroupId $artifactId $version
+
+    # url=$MAVEN_CENTRAL/$groupId/$artifactId/$version/${artifactId}-${version}
+    # 
+    # subtle bug: 
+    # url has a different pattern from file path in terms of the / separator
+    # '//' is the same as '/' in file path,
+    # but '//' is not recognized in a url!
+    # url=${MAVEN_CENTRAL}$groupId/$artifactId/$version/${artifactId}-${version}.jar
+    # url=${MAVEN_CENTRAL}$groupId/$artifactId/$version/${artifactId}-${version}.$1
+    url=${MAVEN_CENTRAL}$groupId/$artifactId/$version/${artifactId}-${version}
+    echo $url
+
+    if [[ $1 == source ]]; then
+        # .sources
+        url=${url}-sources.jar
+    elif [[ $1 == jar ]]; then
+        url=${url}.jar
+    elif [[ $1 == pom ]]; then
+        url=${url}.pom
+    elif [[ $1 == javadoc ]]; then
+        url=${url}-javadoc.jar
+    fi
+
+    # if test $1 -eq source; then
+    #     # .sources
+    #     url=${url}-sources.jar
+    # elif test $1 -eq jar; then
+    #     url=${url}.jar
+    # elif test $1 -eq pom; then
+    #     url=${url}.pom
+    # elif test $1 -eq javadoc; then
+    #     url=${url}-javadoc.jar
+    # fi
+
+    # refactored
+    # bug found: case of v in version mistaken
+    # jar=${artifactId}-${Version}.jar
+    #
+    # jar=${artifactId}-${version}.jar
+    # jar=${artifactId}-${version}.$1
+
+    # echo "Downloading $url.jar ..."
+    #
+    # echo "Downloading $url ..."
+    echo "Trying to downloading $url ..."
+    echo    # separate function output from wget output
+
+    wget --header='Accept: application/java-archive' $url
+    # bug found:
+    # jar not included in url!
+    #
+    # bug found:
+    # url should be a reference, not a string!
+    # prepend $ to url
+    # curl -H 'Accept: application/jar' url
+    # curl -H 'Accept: application/zip' $url
+    # add -O to download!
+    # curl -H 'Accept: application/zip' -O $url
+    # return $url
+    # cannot return a value in shell functions
+    #
+    # url can be directly used out of the function, though
+}
+

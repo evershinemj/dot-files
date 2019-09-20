@@ -1,0 +1,19 @@
+# jgnore all files except .vimrc, .emacs, and other specified files
+# *
+/*
+!.vimrc
+!.emacs
+
+# bash and zsh profiles
+!.bashrc
+!.bash_profile
+!.zshrc
+
+# shell snippets decoupled from bash/zsh profiles
+!.aliases
+!.variables
+!.functions
+
+# git ignore and config files
+!.gitignore
+!.gitconfig

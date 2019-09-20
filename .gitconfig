@@ -1,0 +1,20 @@
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[user]
+	name = wangxueming
+	email = 459226479@qq.com
+[alias]
+	a = add	
+	l = log
+	br = branch
+	co = checkout
+	cm = commit
+	st = status
+	cf = config
+[color]
+	ui = true
+[core]
+	editor = /usr/local/bin/emacs -nw
