@@ -1,0 +1,13 @@
+# eclipse dot files
+.project
+.classpath
+.settings/
+
+# idea dot files
+.idea/
+
+# vscode dot files
+.vscode/
+
+# vs dot files
+.vs/
