@@ -17,3 +17,9 @@
 # git ignore and config files
 !.gitignore
 !.gitconfig
+
+# git global ignore file
+# not ignore .config/git, hence .config/git/ignore is not ignored
+!.config
+/.config/*
+!.config/git
