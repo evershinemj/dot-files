@@ -11,3 +11,9 @@
 
 # vs dot files
 .vs/
+
+# backup files
+## vim backups
+*~
+## emacs backups
+\#*\#
