@@ -479,7 +479,9 @@ autocmd BufReadPost .vimrc*,.exrc vmap ,xc !boxes -f $BOXES_SYS_CONF -d vim-cmt 
 " CAUTION: DON'T USE :imap ## #############
 " remapping exhausts computer resources!
 " using :inoremap ## ############# is fine, though
-inoremap ## ############################################################
+" ############################################################################
+" # inoremap ## ############################################################ #
+" ############################################################################
 
 " set gdefault
 
